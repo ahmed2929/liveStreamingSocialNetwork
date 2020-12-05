@@ -1,12 +1,5 @@
 import express, {Request, Response} from 'express';
 
-
-
-
-
-
-
-
 export default class response {
      // Custom response
  static CustomResponse (res:Response, status:number, messsage:string,data?:any){ 

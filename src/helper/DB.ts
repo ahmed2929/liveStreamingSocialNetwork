@@ -11,10 +11,22 @@ export default class DbQueryHelpers extends AuthHelper{
         return await UserModel.findOne({ email: email });
     }
    
-    getUserFollowersById(ID:Schema.Types.ObjectId){
+    static async findById(ID:Schema.Types.ObjectId){
+       const user:any =await UserModel.findById(ID);
+       if(!user){
+           return -2
+       }
+    }
+    static async getAllUsers(page=1,itemPerPage=10){
+        return await UserModel.find()
+        .skip((page - 1) * itemPerPage)
+        .limit(itemPerPage);
+    }
+
+   static async getUserFollowersById(ID:Schema.Types.ObjectId){
         return UserModel.findById(ID).select('followers').populate('User')
     }
-    getUserFollowingListById(ID:Schema.Types.ObjectId){
+   static async getUserFollowingListById(ID:Schema.Types.ObjectId){
         return UserModel.findById(ID).select('following').populate('User')
     }
     
