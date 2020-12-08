@@ -25,8 +25,15 @@ export  default class AuthHelper{
      }
  
     static async Decodejwt(token:string){
- 
-       return  jwt.verify(token,'ak');
+        try{
+            const userID=await jwt.verify(token.toString(),'AK');
+            console.debug("userid is ",userID)
+            return userID
+
+        }catch(err){
+            console.debug("error is ",err)
+        }
+
  
      }
 
@@ -45,7 +52,7 @@ export  default class AuthHelper{
             return '0'
                        
         }
-        const token =req.get('Authorization').split(' ')[1];
+        const token =req.get('Authorization').toString().split(' ')[1];
 
         return token 
 
@@ -62,14 +69,14 @@ export  default class AuthHelper{
          * 
          */
         const token : string=await this.getToken(req);
-
+        console.debug("token is ",token)
         if(token == '0'){
             return '0'
         }
 
 
         const UserId :any=await this.Decodejwt(token);
-
+        console.debug("userID",UserId)
         if(!UserId){
 
             return '-1'

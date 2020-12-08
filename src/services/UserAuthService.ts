@@ -49,7 +49,8 @@ export class UserAuthServices extends DB{
               status=0
               return status
           }
-        const token=this.GenerateJTW(user._id)
+          console.debug("user is ",user)
+        const token=this.GenerateJTW(user._id.toString())
         return token
 
 
