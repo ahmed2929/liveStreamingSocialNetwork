@@ -3,11 +3,14 @@ import express from 'express'
 import async from '../../events/HandleSocketConnection/handleEvents';
 import {UserAuthServices} from '../../services/UserAuthService'
 import Response from '../../helper/response'
+import {upload} from '../../services/middlewaresServices';
+import {cloud} from '../../helper/cloudinary';
  const Router=express.Router();
 
-Router.put('/singup',async(req:any,res:any,next:any)=>{
-const {email,Fname,Lname,password,photo}=req.body
-console.debug('api run')
+Router.put('/singup',upload.single('photo'),cloud,async(req:any,res:any,next:any)=>{
+const {email,Fname,Lname,password}=req.body
+const photo=req.result.url
+//console.debug('api run req.result is ',req.result)
 const Data=await UserAuthServices.sinup(email,Fname,Lname,password,photo);
 
     if(Data===-1){
@@ -16,7 +19,7 @@ const Data=await UserAuthServices.sinup(email,Fname,Lname,password,photo);
 
 
     Response.Created(res,'user created',Data);
-
+    console.debug("photo is ",photo)
 
 
 
@@ -26,8 +29,8 @@ const Data=await UserAuthServices.sinup(email,Fname,Lname,password,photo);
 
 
 Router.post('/login',async(req:any,res:any,next:any)=>{
-    const {email,Fname,Lname,password,photo}=req.body
-    console.debug('api run')
+    const {email,password}=req.body
+    console.debug('api run password is ',password)
     const loginRes=await UserAuthServices.login(email,password);
     
         if(loginRes===-1){

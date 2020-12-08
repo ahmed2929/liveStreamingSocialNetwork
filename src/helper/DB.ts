@@ -14,8 +14,9 @@ export default class DbQueryHelpers extends AuthHelper{
     static async findById(ID:Schema.Types.ObjectId){
        const user:any =await UserModel.findById(ID);
        if(!user){
-           return -2
+           return "-1"
        }
+       return user
     }
     static async getAllUsers(page=1,itemPerPage=10){
         return await UserModel.find()
@@ -44,7 +45,7 @@ export default class DbQueryHelpers extends AuthHelper{
         firstName:Fname,
         lastName:Lname,
          password:Hpassword,
-            photo
+            photo:photo
         }).save()
 
     }
