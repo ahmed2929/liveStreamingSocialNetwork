@@ -127,7 +127,37 @@ Router.post('/login',async(req:any,res:any,next:any)=>{
             
             
         
+            Router.post('/resetPassword',
+            async(req:any,res:any,next:NextFunction)=>{
+        
+                /*move it to spirt file it make sure that req is authrized*/
+                const result:any =await AuthHelper.isAuhrized(req,res,next);
+                if(result=='0'){
+                Response.Unauthorized(res)
+                }else if (result=='-1'){
+                Response.CustomResponse(res,500,"an error ocured")
+                }else{
+                    console.debug("result " , result)
+                    req.userID=result.UserID
+                    return next()
+                }
+                
+                
+                }
+            ,async(req:any,res:any,next:any)=>{
+                    const {oldPssword,newPassword}=req.body
+                 const result=  await UserAuthServices.resetPassword(req.userID,oldPssword,newPassword)
+                 console.debug("result is ",result)
+                if(result){
+                    Response.Ok(res,'ok');
 
+                }else{
+                    Response.BadRequest(res,"incorerectOld password");
+                }
+                
+                
+                });
+                
 
 
 

@@ -2,7 +2,7 @@ import UserModel from '../modles/user'
 import {Schema} from 'mongoose'
 import bycript from "crypto"
 import AuthHelper from './Auth'
-
+import bcryptL from "bcrypt"
 
 
 export default class DbQueryHelpers extends AuthHelper{
@@ -12,9 +12,9 @@ export default class DbQueryHelpers extends AuthHelper{
     }
    
     static async findById(ID:Schema.Types.ObjectId){
-       // console.debug("user id is for find by id ",ID)
+       console.debug("user id is for find by id ",ID)
        const user:any =await UserModel.findById(ID);
-      // console.debug("user is from finbyid",user)
+       console.debug("user is from finbyid",user)
        if(!user){
            return "-1"
        }
@@ -91,6 +91,30 @@ export default class DbQueryHelpers extends AuthHelper{
         
     }
 
+    static async resetpasswordDB(ID:Schema.Types.ObjectId,oldPassword:String,newPassword:String){
+        const user=await this.findById(ID);
+        if(user=="-1"){
+
+            throw new Error("user not found")
+        }
+
+       const Iscorrect=await bcryptL.compare(oldPassword, user.password)
+
+       if(Iscorrect){
+
+        const hashedPassword=await bcryptL.hash(newPassword,12)
+        user.password=hashedPassword
+        await user.save()
+
+        return true
+
+       }else{
+           return false
+       }
+        
+
+      
+    }
     
 
 

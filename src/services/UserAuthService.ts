@@ -103,4 +103,16 @@ export class UserAuthServices extends DB{
 
 
     }
+
+    static async  resetPassword(ID:Schema.Types.ObjectId,oldPassword:String,newPassword:String){
+     
+       const  result=await this.resetpasswordDB(ID,oldPassword,newPassword)
+        
+       if(result){
+           return true
+       }else{
+          return false
+       }
+ 
+     }
 }
