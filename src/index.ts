@@ -1,7 +1,7 @@
 import express,{Application,Request,Response,NextFunction} from 'express';
 import  {config} from "dotenv"
 import mongoose from 'mongoose'
-import {init} from './socketSetting'
+//import {init} from './socketSetting'
 import meddleware from './meddleware'
 var app:Application =express();
 //config();
@@ -11,7 +11,7 @@ console.debug(process.env.PORT)
 mongoose.connect('mongodb+srv://AK:a01129292532@cluster0.5mhih.mongodb.net/Virta?retryWrites=true&w=majority',({ useNewUrlParser: true,useUnifiedTopology: true }),()=>{
     console.debug('DB connected')
     const server=app.listen(process.env.PORT||8080);
-    init(server)
+    //init(server)
     console.debug('server is up')
 
 
