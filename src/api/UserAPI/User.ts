@@ -16,7 +16,7 @@ Response.Unauthorized(res)
 Response.CustomResponse(res,500,"an error ocured")
 }else{
     console.debug("result " , result)
-    req.userID=result.userId
+    req.userID=result.UserID
     return next()
 }
 

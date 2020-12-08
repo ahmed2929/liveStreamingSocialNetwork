@@ -36,6 +36,16 @@ const UserSchema: Schema = new Schema({
             ref:'User'
         }
     ],
+    EmailActiveCode:{
+        type:String
+    },
+    codeExpireDate:{
+        type:String
+    },
+    emailVerfied:{
+        type:Boolean,
+        default:false
+    }
   
 
 });

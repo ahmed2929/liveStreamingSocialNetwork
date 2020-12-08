@@ -1,12 +1,13 @@
 import DB from '../helper/DB'
 import Auth from '../helper/Auth'
 import response from '../helper/response'
-import {Document} from 'mongoose'
+import {Document, Schema} from 'mongoose'
 import AuthHelper from '../helper/Auth'
 import { NextFunction } from 'express'
 import Response from '../helper/response'
-
-
+import {genrateCode} from '../helper/general'
+import {sendEmail} from '../helper/sendEmail'
+import {sendActivationCode} from "../utilites/messages"
 
 
 export class UserAuthServices extends DB{
@@ -65,10 +66,41 @@ export class UserAuthServices extends DB{
 
     
 
+    static async  sendActivationCode(ID:Schema.Types.ObjectId){
+        const code:String = genrateCode();
+        const userEmail=await this.putCodeToUser(ID,code)
+        console.debug("eamil is ",userEmail)
+
+        if(userEmail){
+           const result= await sendEmail(userEmail,'ActivationCode',sendActivationCode(code))
+           console.debug("sendemail resu ",result)
+           return true
+        }else{
+            return false
+
+        
+
+
+    }
 
 
 
 
 
 
+    }
+
+
+    static async  verfyEmail(ID:Schema.Types.ObjectId,code:String){
+       const result= this.verfiyEamil(ID,code)
+
+       if(result){
+           return true
+       }else{
+           return false
+       }
+
+
+
+    }
 }

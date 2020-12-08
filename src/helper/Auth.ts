@@ -21,12 +21,16 @@ export default class AuthHelper {
                 UserID
             },
             'AK'
-<<<<<<< HEAD
          );
      }
  
     static async Decodejwt(token:string){
         try{
+
+            console.debug("token is ", token)
+
+
+
             const userID=await jwt.verify(token.toString(),'AK');
             console.debug("userid is ",userID)
             return userID
@@ -37,16 +41,7 @@ export default class AuthHelper {
 
  
      }
-=======
-        );
-    }
 
-    static async Decodejwt(token: string) {
-        
-        return jwt.verify(token, 'AK');
-
-    }
->>>>>>> 94bdd94809db3d3a2b7c1696e7bbb5b940af883c
 
     static async getToken(req: any) {
 
@@ -61,16 +56,11 @@ export default class AuthHelper {
 
 
 
-        const token = req.header('Authorization');
+        const token = req.get('Authorization').split(' ')[1];
         console.debug('token is', token);
         if (!token) {
             return '0'
-<<<<<<< HEAD
-                       
-        }
-        const token =req.get('Authorization').toString().split(' ')[1];
-=======
->>>>>>> 94bdd94809db3d3a2b7c1696e7bbb5b940af883c
+
 
         }
         return token
@@ -87,28 +77,18 @@ export default class AuthHelper {
          * 
          * 
          */
-<<<<<<< HEAD
-        const token : string=await this.getToken(req);
-        console.debug("token is ",token)
-        if(token == '0'){
-=======
+
         const token: string = await this.getToken(req);
         
         if (token == '0') {
->>>>>>> 94bdd94809db3d3a2b7c1696e7bbb5b940af883c
             return '0'
         }
 
 
-<<<<<<< HEAD
-        const UserId :any=await this.Decodejwt(token);
-        console.debug("userID",UserId)
-        if(!UserId){
-=======
+
         const UserId: any = await this.Decodejwt(token);
 
         if (!UserId) {
->>>>>>> 94bdd94809db3d3a2b7c1696e7bbb5b940af883c
 
             return '-1'
         }

@@ -1,6 +1,6 @@
 import UserModel from '../modles/user'
 import {Schema} from 'mongoose'
-
+import bycript from "crypto"
 import AuthHelper from './Auth'
 
 
@@ -12,7 +12,9 @@ export default class DbQueryHelpers extends AuthHelper{
     }
    
     static async findById(ID:Schema.Types.ObjectId){
+       // console.debug("user id is for find by id ",ID)
        const user:any =await UserModel.findById(ID);
+      // console.debug("user is from finbyid",user)
        if(!user){
            return "-1"
        }
@@ -48,6 +50,45 @@ export default class DbQueryHelpers extends AuthHelper{
             photo:photo
         }).save()
 
+    }
+
+    static async putCodeToUser(ID:Schema.Types.ObjectId,code:String,expire=3600000){
+        const user=await this.findById(ID);
+        if(user=="-1"){
+            throw new Error("user not found")
+        }
+        user.EmailActiveCode=code
+        user.codeExpireDate=Date.now()  + expire
+      const saved=  await user.save()
+      console.debug("saved is ",saved)
+        return user.email
+
+    }
+
+    static async verfiyEamil(ID:Schema.Types.ObjectId,code:String){
+        const user=await this.findById(ID);
+        if(user=="-1"){
+
+            throw new Error("user not found")
+        }
+
+        if(user.EmailActiveCode!=code){
+            return false
+        }
+
+        
+        if(user.codeExpireDate<=Date.now()){
+    
+            
+            return false
+        }
+    
+        user.emailVerfied=true;
+        await user.save()
+        return true
+
+
+        
     }
 
     
