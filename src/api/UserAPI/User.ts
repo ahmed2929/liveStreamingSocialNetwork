@@ -12,7 +12,7 @@ Router.get('/GetUsers',async(req:any,res:any,next:NextFunction)=>{
 const result:any =await AuthHelper.isAuhrized(req,res,next);
 if(result=='0'){
 Response.Unauthorized(res)
-}else if (result=='0'){
+}else if (result=='-1'){
 Response.CustomResponse(res,500,"an error ocured")
 }else{
     console.debug("result " , result)
@@ -24,7 +24,7 @@ Response.CustomResponse(res,500,"an error ocured")
 },async(req:any,res:any,next:any)=>{
     console.debug("userID is ", req.userID)
     let users=await UserGeneralServices.getUsers(req.query.ID)
-    if(users=='-1'||users=='-2'){
+    if(users=='-1'){
         Response.NotFound(res)
     }else{
 

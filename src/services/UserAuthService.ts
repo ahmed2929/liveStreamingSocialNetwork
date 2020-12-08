@@ -2,9 +2,9 @@ import DB from '../helper/DB'
 import Auth from '../helper/Auth'
 import response from '../helper/response'
 import {Document} from 'mongoose'
-
-
-
+import AuthHelper from '../helper/Auth'
+import { NextFunction } from 'express'
+import Response from '../helper/response'
 
 
 
@@ -54,6 +54,15 @@ export class UserAuthServices extends DB{
 
 
     }
+    static async resetpassword(oldPassword:string,newPassword:string,req:any,res:any,next:NextFunction)
+    
+    {
+      
+            
+
+    } 
+
+    
 
 
 

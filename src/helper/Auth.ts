@@ -3,34 +3,34 @@ import bycript from 'bcrypt'
 import { NextFunction } from 'express';
 import jwt from 'jsonwebtoken'
 
-export  default class AuthHelper{
-    static async CreateHashedPassword(password:string){
- 
-        return await bycript.hash(password,12);
- 
-     }
- 
-    static async CompareHashedPassword(pass1:string,pass2:string){
- 
-         return await bycript.compare(pass1,pass2);
-     }
- 
-     static GenerateJTW(UserID:string){
-         return  jwt.sign(
-             {
-                UserID
-             },
-            'AK'
-         );
-     }
- 
-    static async Decodejwt(token:string){
- 
-       return  jwt.verify(token,'ak');
- 
-     }
+export default class AuthHelper {
+    static async CreateHashedPassword(password: string) {
 
-    static async getToken(req:any){
+        return await bycript.hash(password, 12);
+
+    }
+
+    static async CompareHashedPassword(pass1: string, pass2: string) {
+
+        return await bycript.compare(pass1, pass2);
+    }
+
+    static GenerateJTW(UserID: string) {
+        return jwt.sign(
+            {
+                UserID
+            },
+            'AK'
+        );
+    }
+
+    static async Decodejwt(token: string) {
+        
+        return jwt.verify(token, 'AK');
+
+    }
+
+    static async getToken(req: any) {
 
         /**
          * get token from user request
@@ -40,19 +40,21 @@ export  default class AuthHelper{
          * 
          */
 
-        const authHeader = req.get('Authorization');
-        if(!authHeader){
-            return '0'
-                       
-        }
-        const token =req.get('Authorization').split(' ')[1];
 
-        return token 
+
+
+        const token = req.header('Authorization');
+        console.debug('token is', token);
+        if (!token) {
+            return '0'
+
+        }
+        return token
 
 
     }
-    
-    static async isAuhrized(req:Request,res:Response,next:NextFunction){
+
+    static async isAuhrized(req: Request, res: Response, next: NextFunction) {
         /**
          * return 0 if user is not authorized
          * return userId if user is authorized
@@ -61,23 +63,23 @@ export  default class AuthHelper{
          * 
          * 
          */
-        const token : string=await this.getToken(req);
-
-        if(token == '0'){
+        const token: string = await this.getToken(req);
+        
+        if (token == '0') {
             return '0'
         }
 
 
-        const UserId :any=await this.Decodejwt(token);
+        const UserId: any = await this.Decodejwt(token);
 
-        if(!UserId){
+        if (!UserId) {
 
             return '-1'
         }
-        
+
         return UserId
 
 
     }
- 
- }
+
+}
