@@ -89,6 +89,31 @@ export class UserAuthServices extends DB{
 
 
     }
+    static async  sendForgetPasswordCode(email:string){
+        console.debug('run@@@@@@@@@@@@@@@@')
+        const user:any=await this.findByEmail(email)
+        const code:String = genrateCode();
+        const userEmail=await this.putCodeToUser(user._id,code)
+        console.debug("eamil is ",userEmail)
+
+        if(userEmail){
+           const result= await sendEmail(userEmail,'ActivationCode',sendActivationCode(code))
+           console.debug("sendemail resu ",result)
+           return true
+        }else{
+            return false
+
+        
+
+
+    }
+
+
+
+
+
+
+    }
 
 
     static async  verfyEmail(ID:Schema.Types.ObjectId,code:String){
@@ -115,4 +140,16 @@ export class UserAuthServices extends DB{
        }
  
      }
+     static async  forgetPassword(email:string,newPassword:string,code:string){
+     
+        const  result=await this.forgetpasswordDB(email,newPassword.trim(),code.trim())
+         
+        if(result){
+            return true
+        }else{
+           return false
+        }
+  
+      }
+     
 }
