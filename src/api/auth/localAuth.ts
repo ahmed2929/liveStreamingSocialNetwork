@@ -1,27 +1,27 @@
 
-import express ,{Request,NextFunction} from 'express'
+import express, { Request, NextFunction } from 'express'
 import async from '../../events/HandleSocketConnection/handleEvents';
-import {UserAuthServices} from '../../services/UserAuthService'
+import { UserAuthServices } from '../../services/UserAuthService'
 import Response from '../../helper/response'
-import {upload} from '../../services/middlewaresServices';
-import {cloud} from '../../helper/cloudinary';
+import { upload } from '../../services/middlewaresServices';
+import { cloud } from '../../helper/cloudinary';
 import AuthHelper from '../../helper/Auth';
 
- const Router=express.Router();
+const Router = express.Router();
 
-Router.put('/singup',upload.single('photo'),cloud,async(req:any,res:any,next:any)=>{
-const {email,Fname,Lname,password}=req.body
-const photo=req.result.url
-//console.debug('api run req.result is ',req.result)
-const Data=await UserAuthServices.sinup(email,Fname,Lname,password,photo);
+Router.put('/singup', upload.single('photo'), cloud, async (req: any, res: any, next: any) => {
+    const { email, Fname, Lname, password } = req.body
+    const photo = req.result.url
+    //console.debug('api run req.result is ',req.result)
+    const Data = await UserAuthServices.sinup(email, Fname, Lname, password, photo);
 
-    if(Data===-1){
-        Response.BadRequest(res,'email already exist');
+    if (Data === -1) {
+        Response.BadRequest(res, 'email already exist');
     }
 
 
-    Response.Created(res,'user created',Data);
-    console.debug("photo is ",photo)
+    Response.Created(res, 'user created', Data);
+    console.debug("photo is ", photo)
 
 
 
@@ -30,134 +30,164 @@ const Data=await UserAuthServices.sinup(email,Fname,Lname,password,photo);
 
 
 
-Router.post('/login',async(req:any,res:any,next:any)=>{
-    const {email,password}=req.body
-    console.debug('api run password is ',password)
-    const loginRes=await UserAuthServices.login(email,password);
-    
-        if(loginRes===-1){
-            Response.BadRequest(res,'email not found');
-        }else if(loginRes==0){
-            Response.BadRequest(res,'password doesnt match');
-        }
-    
-        Response.Ok(res,'ok',{token:loginRes});
-    
-    
-    
-    
-    });
-    
-    
-    
-    Router.post('/sendActivationCode',
-    async(req:any,res:any,next:NextFunction)=>{
+Router.post('/login', async (req: any, res: any, next: any) => {
+    const { email, password } = req.body
+    console.debug('api run password is ', password)
+    const loginRes = await UserAuthServices.login(email, password);
+
+    if (loginRes === -1) {
+        Response.BadRequest(res, 'email not found');
+    } else if (loginRes == 0) {
+        Response.BadRequest(res, 'password doesnt match');
+    }
+
+    Response.Ok(res, 'ok', { token: loginRes });
+
+
+
+
+});
+
+
+
+Router.post('/sendActivationCode',
+    async (req: any, res: any, next: NextFunction) => {
 
         /*move it to spirt file it make sure that req is authrized*/
-        const result:any =await AuthHelper.isAuhrized(req,res,next);
-        if(result=='0'){
-        Response.Unauthorized(res)
-        }else if (result=='-1'){
-        Response.CustomResponse(res,500,"an error ocured")
-        }else{
-            console.debug("result " , result)
-            req.userID=result.UserID
+        const result: any = await AuthHelper.isAuhrized(req, res, next);
+        if (result == '0') {
+            Response.Unauthorized(res)
+        } else if (result == '-1') {
+            Response.CustomResponse(res, 500, "an error ocured")
+        } else {
+            console.debug("result ", result)
+            req.userID = result.UserID
             return next()
         }
-        
-        
+
+
+    }
+    , async (req: any, res: any, next: any) => {
+        const result: any = UserAuthServices.sendActivationCode(req.userID);
+
+
+        if (result) {
+            Response.Ok(res, 'ok');
+
+        } else {
+            Response.CustomResponse(res, 500, "an error ocured")
+
         }
-    ,async(req:any,res:any,next:any)=>{
-           const result:any= UserAuthServices.sendActivationCode(req.userID);
 
-          
-        if(result){
-            Response.Ok(res,'ok');
 
-        }else{
-            Response.CustomResponse(res,500,"an error ocured")
 
-        }
-        
-        
-        
-        
-        });
-        
-        
-        
-    
-    
-    
-        Router.post('/verfiyEmail',
-        async(req:any,res:any,next:NextFunction)=>{
-    
-            /*move it to spirt file it make sure that req is authrized*/
-            const result:any =await AuthHelper.isAuhrized(req,res,next);
-            if(result=='0'){
+
+    });
+
+
+
+
+
+
+Router.post('/verfiyEmail',
+    async (req: any, res: any, next: NextFunction) => {
+
+        /*move it to spirt file it make sure that req is authrized*/
+        const result: any = await AuthHelper.isAuhrized(req, res, next);
+        if (result == '0') {
             Response.Unauthorized(res)
-            }else if (result=='-1'){
-            Response.CustomResponse(res,500,"an error ocured")
-            }else{
-                console.debug("result " , result)
-                req.userID=result.UserID
-                return next()
-            }
-            
-            
-            }
-        ,async(req:any,res:any,next:any)=>{
-                const code=req.body.code.trim()
-               const result:Boolean= await UserAuthServices.verfiyEamil(req.userID,code.trim());
-    
-              
-            if(result){
-                Response.Ok(res,'ok');
-    
-            }else{
-                Response.BadRequest(res,"code is wrong or it is expired")
-    
-            }
-            
-            
-            
-            
-            });
-            
-            
-            
-        
-            Router.post('/resetPassword',
-            async(req:any,res:any,next:NextFunction)=>{
-        
-                /*move it to spirt file it make sure that req is authrized*/
-                const result:any =await AuthHelper.isAuhrized(req,res,next);
-                if(result=='0'){
-                Response.Unauthorized(res)
-                }else if (result=='-1'){
-                Response.CustomResponse(res,500,"an error ocured")
-                }else{
-                    console.debug("result " , result)
-                    req.userID=result.UserID
-                    return next()
-                }
-                
-                
-                }
-            ,async(req:any,res:any,next:any)=>{
-                    const {oldPssword,newPassword}=req.body
-                 const result=  await UserAuthServices.resetPassword(req.userID,oldPssword,newPassword)
-                 console.debug("result is ",result)
-                if(result){
-                    Response.Ok(res,'ok');
+        } else if (result == '-1') {
+            Response.CustomResponse(res, 500, "an error ocured")
+        } else {
+            console.debug("result ", result)
+            req.userID = result.UserID
+            return next()
+        }
 
-                }else{
-                    Response.BadRequest(res,"incorerectOld password");
-                }
-                
-                
-                });
-                
+
+    }
+    , async (req: any, res: any, next: any) => {
+        const code = req.body.code.trim()
+        const result: Boolean = await UserAuthServices.verfiyEamil(req.userID, code.trim());
+
+
+        if (result) {
+            Response.Ok(res, 'ok');
+
+        } else {
+            Response.BadRequest(res, "code is wrong or it is expired")
+
+        }
+
+
+
+
+    });
+
+
+
+
+Router.post('/resetPassword',
+    async (req: any, res: any, next: NextFunction) => {
+
+        /*move it to spirt file it make sure that req is authrized*/
+        const result: any = await AuthHelper.isAuhrized(req, res, next);
+        if (result == '0') {
+            Response.Unauthorized(res)
+        } else if (result == '-1') {
+            Response.CustomResponse(res, 500, "an error ocured")
+        } else {
+            console.debug("result ", result)
+            req.userID = result.UserID
+            return next()
+        }
+
+
+    }
+    , async (req: any, res: any, next: any) => {
+        const { oldPssword, newPassword } = req.body
+        const result = await UserAuthServices.resetPassword(req.userID, oldPssword, newPassword)
+        console.debug("result is ", result)
+        if (result) {
+            Response.Ok(res, 'ok');
+
+        } else {
+            Response.BadRequest(res, "incorerectOld password");
+        }
+
+
+    });
+    Router.post('/forgetPasswordCode'
+    , async (req: any, res: any, next: any) => {
+        const { email } = req.body
+        const result = await UserAuthServices.sendForgetPasswordCode(email)
+        console.debug("result is ", result)
+        if (result) {
+            Response.Ok(res, 'ok');
+
+        } else {
+            Response.BadRequest(res, "error");
+        }
+
+
+    });
+
+    Router.post('/forgetPassword',
+    
+     async (req: any, res: any, next: any) => {
+        const { email, newPassword ,code} = req.body
+        const result = await UserAuthServices.forgetPassword(email, newPassword, code)
+        console.debug("result is ", result)
+        if (result) {
+            Response.Ok(res, 'ok');
+
+        } else {
+            Response.BadRequest(res, "error");
+        }
+
+
+    });
+
 
 
 

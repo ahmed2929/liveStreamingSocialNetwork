@@ -3,8 +3,8 @@ import nodemailer from "nodemailer"
 let mailTransporter = nodemailer.createTransport({ 
 	service: 'gmail', 
 	auth: { 
-		user:  'ak8911938@gmail.com', 
-		pass: 'BOOKINGTEST123'
+		user:  'ahmed2013zx2013@gmail.com', 
+		pass: '3636487!a'
 	} 
 });
 
@@ -20,14 +20,16 @@ console.debug("send email run")
      */
 
   let mailDetails = { 
-    from: process.env.emailAddress, 
+    from:'ahmed2013zx2013@gmail.com', 
     to, 
     subject , 
     html
   }; 
-  
+  console.debug("mail details is ",mailDetails)
  const result =await mailTransporter.sendMail(mailDetails)
- console.debug('email send run ',result)
+
+   console.debug('email is sent',result);
+ 
  return result
     
   

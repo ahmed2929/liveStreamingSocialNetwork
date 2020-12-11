@@ -61,6 +61,8 @@ type IUser = {
     photo: string
     followers:any
     following:any
+    EmailActiveCode:string
+    codeExpireDate:any
 
 }
 export default mongoose.model<IUser & Document>('User', UserSchema);

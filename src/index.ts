@@ -11,7 +11,7 @@ console.debug(process.env.PORT)
 mongoose.connect('mongodb+srv://AK:a01129292532@cluster0.5mhih.mongodb.net/Virta?retryWrites=true&w=majority',({ useNewUrlParser: true,useUnifiedTopology: true }),()=>{
     console.debug('DB connected')
     console.debug("port is ",process.env.PORT)
-    const server=app.listen(process.env.PORT||8080);
+    const server=app.listen(process.env.PORT||8070);
    // init(server)
     console.debug('server is up')
 
