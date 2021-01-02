@@ -127,6 +127,44 @@ Router.post('/createComment', async (req: any, res: any, next: NextFunction) => 
     }
 })
 
+Router.post('/createLike', async (req: any, res: any, next: NextFunction) => {
+
+    const result: any = await AuthHelper.isAuhrized(req, res, next);
+    if (result == '0') {
+        Response.Unauthorized(res)
+    } else if (result == '-1') {
+        Response.CustomResponse(res, 500, "an error ocured")
+    } else {
+        console.debug("result ", result)
+        req.userID = result.UserID
+        return next()
+    }
+
+
+
+}, async (req: any, res: any, next: any) => {
+    console.debug("userID is ", req.userID)
+    let result = await UserGeneralServices.createLike(req.userID,req.body.postID)
+    console.debug('post id is ',req.body.postID)
+    if (result===-2) {
+      
+      return  res.status(400).json({
+            state:0,
+            message :"you already have liked this post "
+            
+        })
+
+    }
+    if (!result) {
+        Response.NotFound(res)
+    } else {
+
+        Response.Ok(res, 'Like created', { result });
+
+    }
+
+})
+
 
 
 

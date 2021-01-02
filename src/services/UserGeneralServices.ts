@@ -67,6 +67,23 @@ export default class UserGeneralServices extends DB {
 
 
     }
+    static async createLike(userID: Schema.Types.ObjectId,postID: Schema.Types.ObjectId) {
+
+        const result = await this.createLikeDB(userID,postID,);
+
+        if (!result) {
+            return -1
+        }
+        if (result===-2){
+            return-2
+        }
+        console.log('asdasdasdasdsa');
+
+        return { status: 1, Post: result }
+
+
+
+    }
 
 
 
